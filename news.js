@@ -50,6 +50,8 @@ window.AG_DATA = {
       ] },
   ],
   venues: [
+    { name: '모모 그라운드', area: '인천 영종', surface: '야외 운동장', tags: ['네이버 예약', '훈련용 운동장'], contact: '네이버 예약 · 인스타 DM', real: true,
+      note: '인천 영종구 백운로 432-7 · 값 · 시간은 예약 화면에서', src: 'https://www.instagram.com/momo.ground/' },
     { name: '킨더도기 어질리티 센터', area: '경기 양주', surface: '야외 잔디 · 실내', tags: ['국가대표 코치진 클럽', '레슨 · 클린런 챌린지', '주차'], phone: '010-7369-4828', contact: '전화 · 카톡', real: true,
       note: '값 · 되는 시간은 클럽에 문의', src: 'https://www.instagram.com/kinder_doggy_agility.club/' },
     { name: '팔레드차밍 어질리티 그라운드', area: '경기 양평', surface: '잔디', tags: ['터널 · A프레임 · 허들', '반려견 리조트 안', 'PDC 어질리티 클럽 레슨'], phone: '1668-3523', contact: '카톡 문의', real: true,
