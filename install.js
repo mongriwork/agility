@@ -2,6 +2,19 @@
    클로드 안(아티팩트)에서는 이 파일을 안 쓴다 */
 (() => {
   if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  /* 폰 「뒤로」 — 바로 꺼지지 않게 한 칸 쌓아 두고, 누르면 앱이 한 단계씩 되돌린다 · 홈에서는 2초 안에 두 번 눌러야 닫힘 */
+  let lastBack = 0;
+  const guard = () => { try { history.pushState({ ag: 1 }, '', location.href); } catch (e) {} };
+  addEventListener('load', guard);
+  addEventListener('popstate', () => {
+    const A = window.__agility;
+    if (A && A.back && A.back()) { guard(); return; }
+    const now = Date.now();
+    if (now - lastBack < 2000) { history.back(); return; }        // 두 번째 — 진짜로 나감
+    lastBack = now; guard();
+    const t = document.getElementById('toast');
+    if (t) { t.textContent = '한 번 더 누르면 닫혀요'; t.hidden = false; setTimeout(() => { t.hidden = true; }, 2000); }
+  });
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   if (standalone) return;
   let skip = false; try { skip = localStorage.getItem('agility:installHide') === '1'; } catch (e) {}

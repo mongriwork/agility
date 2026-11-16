@@ -1920,6 +1920,7 @@ function drawVenues() {
   const card = v => `<div class="card"><div class="row"><div style="flex:1;min-width:0"><div class="t" style="font-weight:700">${esc(v.name)}</div><div class="mut">${esc([v.area, v.surface, v.size].filter(Boolean).join(' · '))}</div></div>${v.price ? `<span class="pill acc">${v.price / 10000}만 원/시간</span>` : '<span class="pill">값 문의</span>'}${exTag(v.real)}</div>
     ${(v.tags || []).length ? `<div class="row" style="gap:6px">${v.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
     ${v.hours ? `<span class="mut">${esc(v.hours)}</span>` : ''}
+    ${v.note ? `<span class="mut">${esc(v.note)}</span>` : ''}${v.src ? `<div class="row">${linkBtn(v.src, '안내 글 열기')}</div>` : ''}
     ${v.phone || v.contact ? `<div class="row"><span class="mut" style="flex:1">${esc([v.phone, v.contact].filter(Boolean).join(' · '))}</span>${v.phone ? `<button class="tb ghost" data-copy="${esc(v.phone)}">번호 복사</button>` : ''}</div>` : ''}</div>`;
   let body; if (VSEG === 'area') { const g = {}; vs.forEach(v => { const k = (v.area || '지역 미정').split(' ')[0]; (g[k] = g[k] || []).push(v); }); body = Object.keys(g).map(k => `<div class="sec">${esc(k)}</div>` + g[k].map(card).join('')).join(''); }
   else body = vs.map(card).join('');
@@ -2192,6 +2193,8 @@ const DOGSHAPE = (c) => `<path d="M22 36 C14 30 10 22 12 14" fill="none" stroke=
   <path d="M64 34 L72 14 L86 16 L90 30 Z" fill="${c}"/><circle cx="80" cy="18" r="10" fill="${c}"/>
   <ellipse cx="92" cy="22" rx="8" ry="5" fill="${c}"/><circle cx="99" cy="21" r="2.4" fill="#2b2b35"/>
   <path d="M74 10 L72 -2 L82 8 Z" fill="${c}"/><circle cx="83" cy="15" r="1.9" fill="#2b2b35"/>`;
+/* 체급 강아지 그림(그림 공장 · 배경 지움) — 그림 크기 · 그림 높이의 72% 쯤이 어깨 */
+const DOGIMG = { S: [199, 213], M: [322, 287], I: [366, 313], L: [434, 373] };
 function sizeSVG(big) {
   /* 강아지 한 마리가 S → M → I → L 로 차례로 커지고, 옆 허들 막대도 그 체급 높이로 올라간다(8초 한 바퀴) */
   const W = 340, G = 184, k = 1.75, cx = 175, hx = 284;   // 1 cm = 2.35 칸 · 바닥 y · 강아지 가운데 · 허들 자리
@@ -2199,10 +2202,10 @@ function sizeSVG(big) {
   [20, 40, 60].forEach(cm => { const y = G - cm * k; s += `<line x1="22" x2="${W - 4}" y1="${y}" y2="${y}" class="szgrid"/><text x="0" y="${y + 4}" class="szax">${cm}</text>`; });
   s += `<text x="0" y="${G + 4}" class="szax">0</text><text x="0" y="${G - 62 * k - 8}" class="szax">cm</text><line x1="14" x2="${W - 4}" y1="${G}" y2="${G}" class="szground"/>`;
   SIZES.forEach((z, i) => {
-    const sc = z.sh * k / 50, top = G - z.sh * k, jy = G - +z.jump.split('~')[1] * k;
+    const sc = z.sh * k / 50, dh = z.sh * k / .72, dw = dh * DOGIMG[z.k][0] / DOGIMG[z.k][1], top = G - z.sh * k, jy = G - +z.jump.split('~')[1] * k;
     s += `<g class="szcol" style="--d:${i * 2}s">
-      <line x1="22" x2="${cx + 20 * sc}" y1="${top}" y2="${top}" class="szline"/><text x="24" y="${top - 5}" class="szlab" fill="${z.col}">${z.h}</text>
-      <g class="szdog"><g transform="translate(${cx - 56 * sc} ${G - 80 * sc}) scale(${sc})">${DOGSHAPE(z.col)}</g></g>
+      <line x1="22" x2="${cx + dw * .3}" y1="${top}" y2="${top}" class="szline"/><text x="24" y="${top - 5}" class="szlab" fill="${z.col}">${z.h}</text>
+      <g class="szdog"><image href="art/dog_${z.k}.png" x="${(cx - dw / 2).toFixed(1)}" y="${(G - dh).toFixed(1)}" width="${dw.toFixed(1)}" height="${dh.toFixed(1)}"/></g>
       <line x1="${hx}" x2="${hx}" y1="${jy - 6}" y2="${G}" class="szpost"/><line x1="${hx + 50}" x2="${hx + 50}" y1="${jy - 6}" y2="${G}" class="szpost"/>
       <line x1="${hx}" x2="${hx + 50}" y1="${jy}" y2="${jy}" class="szbar" stroke="${z.col}"/><text x="${hx + 23}" y="${jy - 10}" class="szlab" text-anchor="middle" fill="${z.col}">허들 ${z.jump}</text>
       <text x="${W - 4}" y="26" class="szbig" text-anchor="end" fill="${z.col}">${z.k} ${z.t}</text></g>`;
@@ -2249,10 +2252,18 @@ document.body.addEventListener('click', e => {
 drawTabs();
 { const h0 = (location.hash || '').slice(1); tabGo(TABS.includes(h0) ? h0 : 'home'); }
 
-window.__agility = { tab: tabGo, scene: () => G, P, unP, joy: JOY, pr: PR, prac: { start: () => { setMode('prac'); pracStart(); PR.st = 'trace'; }, move: moveDog, msg: () => $('#pmsg').textContent }, plan: { PLAN, mineCourse, resample, nearOn }, draw: () => { if (LDIRTY) { LDIRTY = false; layers(); } frame(); }, tick: dt => { if (S.mode === "prac") joyTick(dt); } };   // 시험용(점검 때 조이스틱을 흉내 내고 · 화면이 숨어 있어도 한 장 그린다)
+/* 폰 「뒤로」 — 열린 창 닫기 → 코스 안이면 목록으로 → 다른 칸이면 홈으로 · 처리했으면 true(바탕화면 앱 install.js 가 부른다) */
+function agBack() {
+  const ped = document.querySelector('.ped'); if (ped) { const b = ped.querySelector('[data-x="no"]'); if (b) b.click(); else ped.remove(); return true; }
+  if (!TS.hidden) { TS.hidden = true; return true; }
+  if (TAB === 'courses' && home.hidden) { $('#goHome').click(); return true; }
+  if (TAB !== 'home') { tabGo('home'); return true; }
+  return false;
+}
+window.__agility = { back: agBack, tab: tabGo, scene: () => G, P, unP, joy: JOY, pr: PR, prac: { start: () => { setMode('prac'); pracStart(); PR.st = 'trace'; }, move: moveDog, msg: () => $('#pmsg').textContent }, plan: { PLAN, mineCourse, resample, nearOn }, draw: () => { if (LDIRTY) { LDIRTY = false; layers(); } frame(); }, tick: dt => { if (S.mode === "prac") joyTick(dt); } };   // 시험용(점검 때 조이스틱을 흉내 내고 · 화면이 숨어 있어도 한 장 그린다)
 requestAnimationFrame(loop);
 })();
 </script>
 
-<script src="install.js?v=6a4429c7"></script>
+<script src="install.js?v=84f0ea53"></script>
 </body></html>

@@ -50,7 +50,9 @@ window.AG_DATA = {
       ] },
   ],
   venues: [
-    { name: '초록 숲 어질리티 센터', area: '경기 용인', surface: '실외 잔디', size: '40 × 24 m', price: 30000, tags: ['장비 다 있음', '주차', '회원 아니어도', '2마리부터'], phone: '010-0000-0000', contact: '카톡 문의', real: false },
-    { name: '하늘 실내 훈련장', area: '서울 송파', surface: '실내 매트', size: '30 × 20 m', price: 40000, tags: ['비 와도 됨', '허들 · 터널만', '평일 저녁'], phone: '', contact: '', real: false },
+    { name: '킨더도기 어질리티 센터', area: '경기 양주', surface: '야외 잔디 · 실내', tags: ['국가대표 코치진 클럽', '레슨 · 클린런 챌린지', '주차'], phone: '010-7369-4828', contact: '전화 · 카톡', real: true,
+      note: '값 · 되는 시간은 클럽에 문의', src: 'https://www.instagram.com/kinder_doggy_agility.club/' },
+    { name: '팔레드차밍 어질리티 그라운드', area: '경기 양평', surface: '잔디', tags: ['터널 · A프레임 · 허들', '반려견 리조트 안', 'PDC 어질리티 클럽 레슨'], phone: '1668-3523', contact: '카톡 문의', real: true,
+      note: '리조트 안 · 바깥 손님 대관은 문의', src: 'https://www.pdcharming.co.kr/facility/agility-ground' },
   ],
 };
