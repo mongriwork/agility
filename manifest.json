@@ -1,0 +1,30 @@
+{
+ "name": "어질리티 코스 외우기",
+ "short_name": "어질리티",
+ "lang": "ko",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#ffffff",
+ "theme_color": "#2457e6",
+ "description": "코스맵 번호 순서대로 가장 빠른 길을 그려 주고, 따라 달리며 외우는 어질리티 앱",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-mask.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
