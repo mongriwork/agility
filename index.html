@@ -2235,7 +2235,7 @@ document.addEventListener('scroll', e => { const sw = e.target; if (!sw.classLis
   const n = Math.round(sw.scrollLeft / sw.clientWidth); sw.parentElement.querySelectorAll('.szdots i').forEach((d, j) => d.classList.toggle('on', j === n)); }, true);
 function libHtml() {
   return `<div class="sec">자료실</div>
-  <div class="card"><div class="row" style="flex-wrap:nowrap"><span class="k">체급</span><span class="sp"></span><button class="szmore" data-lib="size">자세히 ›</button></div><span class="t">옆으로 넘겨 보세요 — S · M · I · L</span>${szCar()}</div>
+  <div class="card"><div class="row" style="flex-wrap:nowrap"><span class="k">체급</span><span class="sp"></span><button class="szmore" data-lib="size">자세히 ›</button></div>${szCar()}</div>
   <div class="libs"><button class="card lnk" data-lib="grade"><span class="k">등급</span><span class="t">등급과 승급</span></button><button class="card lnk" data-lib="rule"><span class="k">규정</span><span class="t">코스 규정</span></button></div>`;
 }
 function libSheet(k) {
@@ -2292,5 +2292,5 @@ requestAnimationFrame(loop);
 })();
 </script>
 
-<script src="install.js?v=ea3b661e"></script>
+<script src="install.js?v=77df6b8f"></script>
 </body></html>
