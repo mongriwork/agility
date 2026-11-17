@@ -414,9 +414,7 @@ img.clogo { object-fit: cover; }
 <section id="home" aria-label="첫 화면">
   <div class="hm">
     <div class="hm-top">
-      <span class="hm-eyebrow">핸들러를 위한 코스 워크</span>
       <h1>어질리티 코스 외우기</h1>
-      <p class="hm-lead">코스맵의 번호 순서대로 개가 달릴 가장 빠른 길을 그려 드려요. 따라 달려 보고, 번호를 가린 채 손으로 몰며 외워요.</p>
     </div>
     <figure class="hm-hero">
       <div class="hm-map"><canvas id="hmHero" aria-label="코스맵 위에 길이 그려지는 그림"></canvas></div>
@@ -435,7 +433,6 @@ img.clogo { object-fit: cover; }
         <li><span class="k">3</span><div><b>외우기 연습</b><span>번호를 가린 채 조이스틱으로 1번부터 순서대로 넘어요. 넘을 때마다 띵, 순서가 틀리면 삐익 하고 멈춰요.</span></div></li>
       </ol>
     </div>
-    <p class="hm-foot">길은 개의 회전 반경과 속도를 셈해 가장 빨리 달리는 쪽으로 그려요. 정답 코스 30장과 견주며 계속 다듬고 있어요.</p>
   </div>
 </section>
 
@@ -1905,8 +1902,7 @@ function drawHome() {
   <div class="card"><span class="k">오늘 연습 거리</span><span class="t" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ng ? `${esc(ng)} 코스로 1인칭 달리기` : '내 코스 만들어 외우기'}</span>
     <span class="row"><button class="tb" data-go="courses">코스 칸 열기</button></span></div>
   ${AD.venues.length ? `<button class="card lnk" data-go="venues"><span class="row"><span class="k">대관</span><span class="sp"></span><span class="mut">${AD.venues.length}곳</span></span><span class="mut">${esc(AD.venues[0].name)} · ${esc(AD.venues[0].area)}${AD.venues[0].price ? ' · 시간당 ' + (AD.venues[0].price / 10000) + '만 원' : ''}</span></button>` : ''}
-  ${libHtml()}
-  <p class="ex">소식 고친 날 ${esc(AD.updated || '')} · 「예시」가 붙은 것은 아직 지어 넣은 내용이에요.</p>`;
+  ${libHtml()}`;
   dogSwInit();
 }
 function drawEvents() {
@@ -1926,7 +1922,7 @@ function drawEvents() {
   <div class="seg" data-seg="ev"><button data-v="mine" aria-pressed="${EVSEG === 'mine'}">내 등급만</button><button data-v="all" aria-pressed="${EVSEG === 'all'}">전체</button><button data-v="area" aria-pressed="${EVSEG === 'area'}">지역별</button></div>
   <div class="card"><div class="row"><button class="mnav" data-mon="-1" aria-label="지난달">‹</button><b style="font-weight:800;font-size:17px;flex:1;text-align:center">${y}년 ${m + 1}월</b><button class="mnav" data-mon="1" aria-label="다음 달">›</button></div>
     <div class="cal">${cal}</div><span class="mut">파란 날 = 내 등급 대회 · 흰 날 = 그 밖</span>${AD.ranges ? `<span class="mut">${esc(AD.ranges)}</span>` : ''}</div>
-  ${body}<p class="ex">대회를 누르면 자세히 볼 수 있어요 · 소식 고친 날 ${esc(AD.updated || '')}</p>`;
+  ${body}`;
 }
 function drawVenues() {
   const vs = AD.venues.slice(); if (VSEG === 'price') vs.sort((a, b) => (a.price || 1e9) - (b.price || 1e9));
@@ -1939,8 +1935,7 @@ function drawVenues() {
   else body = vs.map(card).join('');
   $('#tpVenues').innerHTML = `<div class="hdr"><h2>대관</h2>${avHtml()}</div>
   <div class="seg" data-seg="v"><button data-v="all" aria-pressed="${VSEG === 'all'}">전체</button><button data-v="price" aria-pressed="${VSEG === 'price'}">값 낮은 순</button><button data-v="area" aria-pressed="${VSEG === 'area'}">지역별</button></div>
-  ${body || '<div class="card"><div class="empty">아직 올린 곳이 없어요</div></div>'}
-  <p class="ex">예약은 나중에 — 지금은 연락처 · 시간 · 값만 올려요.</p>`;
+  ${body || '<div class="card"><div class="empty">아직 올린 곳이 없어요</div></div>'}`;
 }
 function drawClub() {
   const cl = myClub(); if (typeof bdSub === 'function' && BD.db) bdSub(); if (!cl) { $('#tpClub').innerHTML = '<div class="hdr"><h2>클럽</h2></div><div class="card"><div class="empty">클럽 자료가 없어요</div></div>'; return; }
@@ -1951,8 +1946,7 @@ function drawClub() {
   ${bdCanWrite() ? `<button class="card hero lnk" data-write style="flex-direction:row;align-items:center;gap:10px;flex-wrap:nowrap"><span class="big" style="font-size:20px;white-space:nowrap;flex:none">＋ 글쓰기</span><span class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">사진 · 인스타 글도</span></button>` : ''}
   ${BD.st === 'slow' ? '<p class="ex">앱에 올린 글을 아직 못 불러왔어요 — 인터넷을 확인해 주세요</p>' : BD.st === 'err' ? '<p class="ex">앱에 올린 글을 불러오지 못했어요</p>' : ''}
   <div class="card"><span class="k">공지</span><div class="list">${bdList('nt').map(bdRow).join('')}${nt.map((n, i) => `<button class="li lnk" data-nt="${i}"><span class="pill acc">${esc(n.tag || '공지')}</span><span class="grow"><span class="t" style="display:block">${esc(n.title)}</span>${n.date ? `<span class="mut">${esc(dLabel(n.date))}</span>` : ''}</span>${exTag(n.real)}</button>`).join('') || (bdList('nt').length ? '' : '<div class="empty">공지가 없어요</div>')}</div></div>
-  <div class="card"><span class="k">회원 소식</span><div class="list">${bdList('nw').map(bdRow).join('')}${nw.map((n, i) => `<button class="li lnk" data-nw="${i}"><span class="av" style="width:28px;height:28px;font-size:12px">${esc((n.who || '?').slice(0, 1))}</span><span class="grow"><span class="t" style="display:block">${esc(n.who)} · ${esc(n.title)}</span>${n.date ? `<span class="mut">${esc(dLabel(n.date))}</span>` : ''}</span>${exTag(n.real)}</button>`).join('') || (bdList('nw').length ? '' : '<div class="empty">소식이 없어요</div>')}</div></div>
-  <p class="ex">${cl.real ? '클럽 이름 · 자리 · 소개는 실제예요. ' : ''}「예시」가 없는 공지 · 소식은 클럽이 공개로 올린 글에서 옮겼어요. </p>`;
+  <div class="card"><span class="k">회원 소식</span><div class="list">${bdList('nw').map(bdRow).join('')}${nw.map((n, i) => `<button class="li lnk" data-nw="${i}"><span class="av" style="width:28px;height:28px;font-size:12px">${esc((n.who || '?').slice(0, 1))}</span><span class="grow"><span class="t" style="display:block">${esc(n.who)} · ${esc(n.title)}</span>${n.date ? `<span class="mut">${esc(dLabel(n.date))}</span>` : ''}</span>${exTag(n.real)}</button>`).join('') || (bdList('nw').length ? '' : '<div class="empty">소식이 없어요</div>')}</div></div>`;
 }
 /* 아래에서 올라오는 자세히 보기 창 */
 const TS = $('#tSheet');
@@ -2292,5 +2286,5 @@ requestAnimationFrame(loop);
 })();
 </script>
 
-<script src="install.js?v=77df6b8f"></script>
+<script src="install.js?v=9b6f5cbb"></script>
 </body></html>
