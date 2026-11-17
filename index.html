@@ -238,7 +238,11 @@ img.clogo { object-fit: cover; }
 .tp .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
 .tp .cal span { padding: 6px 0; border-radius: 9px; }
 .tp .cal .w { color: var(--muted); font-size: 12.5px; }
-.tp .cal .ev { background: var(--blue); color: #fff; font-weight: 700; box-shadow: 0 3px 7px rgba(36,87,230,.3); }
+.tp .cal .ev, .tp .lgd .ev { background: linear-gradient(145deg, #ffeee7, #ffd6c6); color: #a3341a; font-weight: 700; box-shadow: 2px 3px 6px rgba(163,52,26,.28), -2px -2px 5px rgba(255,255,255,.9); }
+.tp .lgd { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 13.5px; color: var(--muted); }
+.tp .lgd span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tp .lgd i { width: 16px; height: 16px; border-radius: 50%; flex: none; }
+.tp .lgd .ev2 { background: linear-gradient(145deg, #eef2fa, #d3dcec); box-shadow: 2px 3px 6px rgba(90,110,150,.3), -2px -2px 5px rgba(255,255,255,.9); }
 .tp .cal .ev2 { background: linear-gradient(145deg, var(--hi), var(--lo)); box-shadow: var(--shs); font-weight: 700; }
 .tp .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
 .tp .slots i { height: 18px; border-radius: 6px; background: linear-gradient(145deg, var(--hi), var(--lo)); box-shadow: var(--shs), inset 1px 1px 0 #fff; }
@@ -247,8 +251,8 @@ img.clogo { object-fit: cover; }
 .tp .ex { font-size: 13px; color: var(--muted); text-align: center; margin: 4px 0 0; }
 .tp .sec { font: 700 15px var(--body); margin: 6px 2px -4px; color: #3a4f80; }
 .tp .cal button { border: 0; background: none; font: inherit; color: inherit; padding: 6px 0; border-radius: 9px; cursor: pointer; }
-.tp .cal button.ev { background: var(--blue); color: #fff; font-weight: 700; box-shadow: 0 3px 7px rgba(36,87,230,.3); }
-.tp .cal button.ev2 { background: linear-gradient(145deg, var(--hi), var(--lo)); box-shadow: var(--shs); font-weight: 700; color: var(--ink); }
+.tp .cal button.ev { background: linear-gradient(145deg, #ffeee7, #ffd6c6); color: #a3341a; font-weight: 700; box-shadow: 2px 3px 6px rgba(163,52,26,.28), -2px -2px 5px rgba(255,255,255,.9); }
+.tp .cal button.ev2 { background: linear-gradient(145deg, #eef2fa, #d3dcec); box-shadow: 2px 3px 6px rgba(90,110,150,.3), -2px -2px 5px rgba(255,255,255,.9); font-weight: 700; color: var(--ink); }
 .tp .cal .today { outline: 2px solid var(--accent); outline-offset: -2px; }
 .tp .mnav { border: 0; background: none; font: 700 20px var(--body); color: #3a4f80; padding: 0 8px; cursor: pointer; }
 .tp .li.lnk .grow { text-align: left; }
@@ -1126,12 +1130,13 @@ function layers() {
 function idxAt(s) { let lo = 0, hi = G.cum.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; G.cum[m] <= s ? lo = m : hi = m; } return lo; }
 function pointAt(s) { const i = idxAt(s), a = G.path[i], b = G.path[Math.min(i + 1, G.path.length - 1)], L = (G.cum[i + 1] ?? G.cum[i]) - G.cum[i];
   return L > 0 ? add(a, mul(sub(b, a), (s - G.cum[i]) / L)) : a; }
+const PATHC = '#f45656';   // 코스선 — 연한 빨강(11-18 영재님)
 function drawPath(c, s0, s1, col, w, dash) {
   if (s1 <= s0) return;
   const i0 = idxAt(s0), i1 = idxAt(s1), pts = [pointAt(s0), ...G.path.slice(i0 + 1, i1 + 1), pointAt(s1)].map(p => P(p[0], p[1], .03));
   c.lineJoin = 'round'; c.lineCap = 'round'; c.setLineDash(dash || []);
   c.beginPath(); pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]));
-  if (!dash) { c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = w + 2.4; c.stroke(); }
+  if (!dash) { c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = w + .8; c.stroke(); }
   c.strokeStyle = col; c.lineWidth = w; c.stroke(); c.setLineDash([]);
 }
 const nextNum = s => G.nums.find(m => m.s > s + .05);
@@ -1404,10 +1409,10 @@ function frame() {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.drawImage(LG, 0, 0, cssW, cssH);
   if (G.path.length < 2) { /* 번호 없는 내 코스 */ }
-  else if (S.mode === 'course' || S.mode === 'make') drawPath(ctx, 0, G.total, S.mode === 'make' ? 'rgba(217,43,43,.7)' : '#d92b2b', S.mode === 'make' ? 1.8 : 2.2);   // 코스선 가늘게(11-06)
-  else if (S.mode === 'view') drawPath(ctx, 0, RUN.s, '#d92b2b', 2.4);
+  else if (S.mode === 'course' || S.mode === 'make') drawPath(ctx, 0, G.total, S.mode === 'make' ? 'rgba(244,86,86,.8)' : PATHC, S.mode === 'make' ? .9 : 1.1);   // 코스선 연한 빨강 · 반 굵기(11-18)
+  else if (S.mode === 'view') drawPath(ctx, 0, RUN.s, PATHC, 1.2);
   else {
-    if (PR.st === 'done') drawPath(ctx, 0, G.total, 'rgba(217,43,43,.75)', 2.2);
+    if (PR.st === 'done') drawPath(ctx, 0, G.total, PATHC, 1.1);
     if (PR.fail) drawPath(ctx, PR.fail.s0, PR.fail.s1, 'rgba(25,25,25,.75)', 2.4, [7, 6]);
   }
   ctx.drawImage(LO, 0, 0, cssW, cssH);
@@ -1763,7 +1768,7 @@ function miniDraw(cn, C, prog, small) {
   const d = Math.min(2.5, window.devicePixelRatio || 1); if (cn.width !== Math.round(w * d)) { cn.width = Math.round(w * d); cn.height = Math.round(h * d); }
   const x = cn.getContext('2d'); x.setTransform(d, 0, 0, d, 0, 0);
   const [FW, FH] = C.field, pad = small ? 5 : 16, k = Math.min((w - 2 * pad) / FW, (h - 2 * pad) / FH), ox = (w - k * FW) / 2, oy = (h - k * FH) / 2;
-  const T = p => [ox + p[0] * k, oy + p[1] * k], ink = tok('--ink'), line = tok('--line'), red = tok('--signal');
+  const T = p => [ox + p[0] * k, oy + p[1] * k], ink = tok('--ink'), line = tok('--line'), red = PATHC;
   x.fillStyle = tok('--solid'); x.fillRect(0, 0, w, h);
   x.strokeStyle = line; x.lineWidth = 1;                                   // 1 m 모눈 · 5 m 마다 진하게
   for (let i = 0; i <= FW; i++) { if (small && i % 5) continue; x.globalAlpha = i % 5 ? .45 : 1; x.beginPath(); x.moveTo(...T([i, 0])); x.lineTo(...T([i, FH])); x.stroke(); }
@@ -1772,10 +1777,10 @@ function miniDraw(cn, C, prog, small) {
   x.lineCap = 'round'; x.lineJoin = 'round';
   const P0 = C.path; if (P0.length > 1) {
     const cum = cumOf(C), end = Math.min(prog, cum[cum.length - 1]); let i = 1;
-    x.beginPath(); P0.forEach((q, j) => j ? x.lineTo(...T(q)) : x.moveTo(...T(q))); x.strokeStyle = red; x.globalAlpha = .18; x.lineWidth = Math.max(2, k * .14); x.stroke(); x.globalAlpha = 1;
+    x.beginPath(); P0.forEach((q, j) => j ? x.lineTo(...T(q)) : x.moveTo(...T(q))); x.strokeStyle = red; x.globalAlpha = .18; x.lineWidth = Math.max(1, k * .07); x.stroke(); x.globalAlpha = 1;
     x.beginPath(); x.moveTo(...T(P0[0])); for (; i < P0.length && cum[i] <= end; i++) x.lineTo(...T(P0[i]));
     const f = i < P0.length ? (end - cum[i - 1]) / ((cum[i] - cum[i - 1]) || 1) : 0, tip = i < P0.length ? add(P0[i - 1], mul(sub(P0[i], P0[i - 1]), f)) : P0[P0.length - 1];
-    x.lineTo(...T(tip)); x.strokeStyle = tok('--solid'); x.lineWidth = Math.max(3.5, k * .14) + 3; x.stroke(); x.strokeStyle = red; x.lineWidth = Math.max(small ? 1.8 : 2.6, k * .14); x.stroke();
+    x.lineTo(...T(tip)); x.strokeStyle = tok('--solid'); x.lineWidth = Math.max(1.8, k * .07) + 2; x.stroke(); x.strokeStyle = red; x.lineWidth = Math.max(small ? .9 : 1.3, k * .07); x.stroke();
     if (!small && end < cum[cum.length - 1]) { const q = T(tip); x.fillStyle = red; x.strokeStyle = tok('--solid'); x.lineWidth = 2.5; x.beginPath(); x.arc(q[0], q[1], Math.max(5, k * .28), 0, 7); x.fill(); x.stroke(); }
   }
   for (const o of C.obs) {
@@ -1921,7 +1926,7 @@ function drawEvents() {
   $('#tpEvents').innerHTML = `<div class="hdr"><h2>대회</h2>${avHtml()}</div>
   <div class="seg" data-seg="ev"><button data-v="mine" aria-pressed="${EVSEG === 'mine'}">내 등급만</button><button data-v="all" aria-pressed="${EVSEG === 'all'}">전체</button><button data-v="area" aria-pressed="${EVSEG === 'area'}">지역별</button></div>
   <div class="card"><div class="row"><button class="mnav" data-mon="-1" aria-label="지난달">‹</button><b style="font-weight:800;font-size:17px;flex:1;text-align:center">${y}년 ${m + 1}월</b><button class="mnav" data-mon="1" aria-label="다음 달">›</button></div>
-    <div class="cal">${cal}</div><span class="mut">파란 날 = 내 등급 대회 · 흰 날 = 그 밖</span>${AD.ranges ? `<span class="mut">${esc(AD.ranges)}</span>` : ''}</div>
+    <div class="cal">${cal}</div><div class="lgd"><span><i class="ev"></i>내 등급 대회</span><span><i class="ev2"></i>그 외 대회</span></div>${AD.ranges ? `<span class="mut">${esc(AD.ranges)}</span>` : ''}</div>
   ${body}`;
 }
 function drawVenues() {
@@ -2286,5 +2291,5 @@ requestAnimationFrame(loop);
 })();
 </script>
 
-<script src="install.js?v=9b6f5cbb"></script>
+<script src="install.js?v=7e5425ca"></script>
 </body></html>
